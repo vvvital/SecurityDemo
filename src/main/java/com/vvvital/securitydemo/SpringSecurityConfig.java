@@ -25,10 +25,12 @@ public class SpringSecurityConfig {
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login","/logout","/").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/user/**").hasRole(Role.USER.name())
-                        .requestMatchers(HttpMethod.GET,"/user/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/user/create").permitAll()
+                        .requestMatchers("swagger-ui/index.html#/user-controller/getAll").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/user/getAll").hasRole(Role.USER.name())
+                        .requestMatchers(HttpMethod.GET,"/user/getAll").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/user/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/user/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,"/user/delete/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())

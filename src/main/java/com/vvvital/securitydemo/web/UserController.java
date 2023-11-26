@@ -6,10 +6,7 @@ import com.vvvital.securitydemo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
@@ -32,24 +29,22 @@ public class UserController {
 
     @GetMapping("/getAll")
     public List<User> getAll(){
-        return USERS;
+        return userService.findAll();
     }
 
     @GetMapping("/get")
-    public User get(@RequestParam Integer id){
-        return USERS.stream().filter(user -> user.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public User get(@RequestParam Long id){
+        return userService.findById(id);
     }
 
     @PostMapping("/create")
     public User create(@RequestBody User user){
-        USERS.add(user);
+        userService.save(user);
         return user;
     }
 
     @DeleteMapping("/delete")
-    public void delete (@RequestParam Integer id){
-        USERS.removeIf(user -> Objects.equals(user.getId(), id));
+    public void delete (@RequestParam User user){
+        userService.delete(user);
     }
 }
