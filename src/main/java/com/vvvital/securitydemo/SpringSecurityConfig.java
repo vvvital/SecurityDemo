@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,20 +22,22 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SpringSecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login","/logout","/").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/user/create").permitAll()
-                        .requestMatchers("swagger-ui/index.html#/user-controller/getAll").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/user/getAll").hasRole(Role.USER.name())
-                        .requestMatchers(HttpMethod.GET,"/user/getAll").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST,"/user/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/user/delete/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/swagger-ui/**","/v3/api-docs/**","/v3/api-docs.yaml","/api/v1/auth/**"
+                        ,"/swagger-ui/**","/swagger-ui.html").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/templates/login.html").permitAll()
+                        .requestMatchers("/api/getAll").hasRole(Role.USER.name())
                         .anyRequest().authenticated()
+
                 )
-                .httpBasic(withDefaults())
-                .build();
+                .formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.loginPage("/login.html"))
+                .httpBasic(withDefaults());
+
+        return http.build();
     }
 
     @Bean

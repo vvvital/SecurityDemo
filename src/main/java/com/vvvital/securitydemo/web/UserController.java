@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -22,29 +21,31 @@ public class UserController {
             new User(3,"Petro","Petrov",Role.USER)
     ).toList();
 
-    @GetMapping ("/")
+    @GetMapping ("/new")
     public String hello() {
         return "Hello";
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/new/save")
+    public String create(){
+        //userService.save(user);
+        return "save user";
+    }
+
+    @GetMapping("/api/getAll")
     public List<User> getAll(){
         return userService.findAll();
     }
 
-    @GetMapping("/get")
-    public User get(@RequestParam Long id){
+    @GetMapping("/api/get{id}")
+    public User get(@PathVariable Long id){
         return userService.findById(id);
     }
 
-    @PostMapping("/create")
-    public User create(@RequestBody User user){
-        userService.save(user);
-        return user;
-    }
 
-    @DeleteMapping("/delete")
-    public void delete (@RequestParam User user){
+
+    @DeleteMapping("/api/delete")
+    public void delete (@RequestBody User user){
         userService.delete(user);
     }
 }
