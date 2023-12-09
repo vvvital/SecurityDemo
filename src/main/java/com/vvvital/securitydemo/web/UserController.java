@@ -3,49 +3,41 @@ package com.vvvital.securitydemo.web;
 import com.vvvital.securitydemo.Service.UserService;
 import com.vvvital.securitydemo.model.Role;
 import com.vvvital.securitydemo.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-
-    private  List<User> USERS = Stream.of(
-            new User(1,"Andriy","Andreev", Role.USER),
-            new User(2,"Ivan","Ivanov",Role.USER),
-            new User(3,"Petro","Petrov",Role.USER)
-    ).toList();
-
-    @GetMapping ("/new")
-    public String hello() {
-        return "Hello";
+    @GetMapping ("/unauthorized")
+    public String unauthorized(){
+        return "unauthorized data";
     }
 
-    @GetMapping("/new/save")
-    public String create(){
-        //userService.save(user);
-        return "save user";
+    @GetMapping ("/authorized")
+    public String authorized(){
+        return "authorized data";
     }
 
-    @GetMapping("/api/getAll")
-    public List<User> getAll(){
-        return userService.findAll();
+    @GetMapping ("/admin")
+    public String admin(){
+        return "admin data";
     }
 
-    @GetMapping("/api/get{id}")
-    public User get(@PathVariable Long id){
-        return userService.findById(id);
+    @GetMapping ("/user")
+    public String user(Principal principal){
+        return principal.getName();
     }
 
+//    @GetMapping("/login")
+//    public String logIn(){
+//        return "loginForm.html";
+//    }
 
-
-    @DeleteMapping("/api/delete")
-    public void delete (@RequestBody User user){
-        userService.delete(user);
-    }
 }

@@ -1,36 +1,28 @@
 package com.vvvital.securitydemo.Service;
 
 import com.vvvital.securitydemo.Repository.UserRepository;
-import com.vvvital.securitydemo.SpringSecurityConfig;
 import com.vvvital.securitydemo.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    SpringSecurityConfig securityConfig;
-
-
-    public User save(User user){
-        return userRepository.save(user);
-    }
+    private final UserRepository userRepository;
 
     public List<User> findAll(){
         return userRepository.findAll();
     }
 
-    public void delete(User user){
-        userRepository.delete(user);
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException(
+                "User not found"
+        ));
     }
 
-    public User findById(Long id){
-        return userRepository.findById(id).orElse(null);
-    }
 }

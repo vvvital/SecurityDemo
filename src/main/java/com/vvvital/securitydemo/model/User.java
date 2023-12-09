@@ -3,6 +3,8 @@ package com.vvvital.securitydemo.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Collection;
+
 @Entity
 @Getter
 @Setter
@@ -17,7 +19,7 @@ public class User {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private Role role;
-
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Collection<Role> role;
 
 }
