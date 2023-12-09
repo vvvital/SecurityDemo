@@ -1,16 +1,16 @@
 package com.vvvital.securitydemo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Collection;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Table(name = "users")
 public class User {
     @Id
@@ -18,7 +18,8 @@ public class User {
     private Integer id;
     private String email;
     private String password;
-    private Role role;
-
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Collection<Role> role;
 
 }
